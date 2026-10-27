@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Công cụ nén ảnh trực tuyến miễn phí. Giảm dung lượng ảnh ngay trên trình duyệt.">
+  <title>Nén ảnh trực tuyến — Tool-web</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    .drop-active { border-color: #2563eb !important; background: rgba(59,130,246,.07) !important; }
+    .dark body { background:#0b1220; color:#e5e7eb; }
+    .dark .surface { background:#111827 !important; border-color:#263244 !important; color:#e5e7eb; }
+    .dark .nav { background:rgba(11,18,32,.96) !important; border-color:#263244 !important; }
+    .dark .muted { color:#aab6c8 !important; }
+    .dark .subtle { background:#0f172a !important; border-color:#263244 !important; }
+    .dark input, .dark select { background:#0b1220; color:#e5e7eb; border-color:#374151; }
+    .dark .main-title { color:#f8fafc !important; }
+    .dark .nav-link:hover, .dark .icon-button:hover { background:#1f2937; }
+    .checkerboard { background-color:#f8fafc; background-image:linear-gradient(45deg,#e5e7eb 25%,transparent 25%),linear-gradient(-45deg,#e5e7eb 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e5e7eb 75%),linear-gradient(-45deg,transparent 75%,#e5e7eb 75%); background-size:18px 18px; background-position:0 0,0 9px,9px -9px,-9px 0px; }
+    .range { accent-color:#2563eb; }
+    .preview-img { max-width:100%; max-height:340px; object-fit:contain; }
+    button:focus-visible, input:focus-visible, select:focus-visible { outline:3px solid rgba(59,130,246,.45); outline-offset:2px; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+  <header class="nav sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+    <div class="mx-auto flex max-w-[1500px] items-center gap-7 px-5 py-3 lg:px-8">
+      <a href="#" class="flex shrink-0 items-center gap-3 text-2xl font-bold tracking-tight text-blue-600">
+        <i data-lucide="wrench" class="h-8 w-8"></i><span>Tool-web</span>
+      </a>
+      <nav class="hidden items-center gap-1 text-[15px] font-medium text-slate-600 md:flex">
+        <a class="nav-link rounded-xl px-3 py-2 hover:bg-slate-100" href="#home">Trang chủ</a>
+        <a class="nav-link rounded-xl bg-blue-50 px-4 py-2 text-blue-600" href="#tool">Công cụ</a>
+        <a class="nav-link rounded-xl px-3 py-2 hover:bg-slate-100" href="#categories">Danh mục</a>
+        <a class="nav-link rounded-xl px-3 py-2 hover:bg-slate-100" href="#blog">Bài viết</a>
+        <a class="nav-link rounded-xl px-3 py-2 hover:bg-slate-100" href="#favorites">Yêu thích</a>
+        <a class="nav-link rounded-xl px-3 py-2 hover:bg-slate-100" href="#about">Giới thiệu</a>
+        <a class="nav-link rounded-xl px-3 py-2 hover:bg-slate-100" href="#contact">Liên hệ</a>
+      </nav>
+      <div class="ml-auto flex min-w-0 items-center gap-2">
+        <label class="hidden items-center gap-2 rounded-xl border border-slate-200 bg-slate-100 px-3 py-2 text-slate-500 sm:flex">
+          <i data-lucide="search" class="h-4 w-4"></i>
+          <input id="toolSearch" class="w-32 border-0 bg-transparent text-sm outline-none placeholder:text-slate-400 lg:w-40" placeholder="Tìm công cụ..." aria-label="Tìm công cụ">
+        </label>
+        <button id="themeBtn" class="icon-button rounded-xl p-2 text-slate-500 hover:bg-slate-100" aria-label="Chuyển chế độ sáng tối" title="Chuyển chế độ sáng tối"><i data-lucide="moon" class="h-5 w-5"></i></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="tool" class="mx-auto max-w-[1500px] px-5 pb-16 pt-5 lg:px-8">
+    <div class="mb-4 flex items-center gap-2 text-sm text-slate-500 muted">
+      <span>Thuộc danh mục</span><a href="#categories" class="rounded-full bg-blue-50 px-3 py-1 font-medium text-blue-600">Công cụ hình ảnh</a><span>· Bộ công cụ</span>
+    </div>
+
+    <section class="mb-5">
+      <div class="flex items-start gap-4">
+        <div class="mt-1 rounded-2xl bg-blue-100 p-4 text-blue-600"><i data-lucide="image" class="h-9 w-9"></i></div>
+        <div class="min-w-0 flex-1">
+          <div class="flex flex-wrap items-center gap-3">
+            <h1 class="main-title text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Nén ảnh trực tuyến</h1>
+            <button id="favoriteBtn" class="icon-button rounded-xl bg-slate-100 p-3 text-slate-400 hover:text-rose-500" aria-label="Thêm vào yêu thích" title="Thêm vào yêu thích"><i data-lucide="heart" class="h-5 w-5"></i></button>
+          </div>
+          <p class="mt-1 text-lg text-slate-500 muted">Giảm dung lượng ảnh, giữ chất lượng phù hợp và tải xuống dễ dàng</p>
+        </div>
+      </div>
+      <p class="mt-5 max-w-6xl leading-7 text-slate-600 muted">Tải ảnh lên, tùy chỉnh chất lượng nén và định dạng đầu ra, sau đó so sánh dung lượng trước và sau khi xử lý. Ảnh được xử lý ngay trên trình duyệt của bạn, không tải lên máy chủ.</p>
+      <div class="mt-3 flex flex-wrap items-center gap-2 text-sm text-slate-500 muted">
+        <span class="inline-flex items-center gap-1.5"><i data-lucide="shield-check" class="h-4 w-4 text-emerald-500"></i> Xử lý riêng tư trên thiết bị</span>
+        <span class="mx-1 text-slate-300">·</span>
+        <span class="inline-flex items-center gap-1.5"><i data-lucide="zap" class="h-4 w-4 text-emerald-500"></i> Không cần tài khoản</span>
+      </div>
+    </section>
+
+    <div class="surface mb-7 rounded-2xl border border-slate-200 bg-white px-5 py-4">
+      <div class="flex items-start gap-3">
+        <i data-lucide="info" class="mt-0.5 h-5 w-5 shrink-0 text-blue-600"></i>
+        <div>
+          <p class="font-medium">Ảnh của bạn luôn nằm trên thiết bị</p>
+          <p class="muted mt-1 text-sm leading-6 text-slate-500">Quá trình nén dùng Canvas của trình duyệt. Không có tệp ảnh nào được gửi đến máy chủ của Tool-web. Thư viện giao diện cần kết nối Internet để tải lần đầu.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_330px]">
+      <section class="surface rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+        <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-lg font-semibold">Chọn ảnh cần nén</h2>
+            <p class="muted mt-1 text-sm text-slate-500">Hỗ trợ JPG, PNG, WebP, GIF tĩnh, BMP và một số định dạng ảnh trình duyệt đọc được</p>
+          </div>
+          <button id="chooseBtn" class="rounded-xl bg-blue-600 px-4 py-2.5 font-semibold text-white hover:bg-blue-700"><i data-lucide="upload" class="mr-2 inline h-4 w-4"></i>Chọn ảnh</button>
+          <input id="fileInput" type="file" accept="image/*" multiple class="hidden">
+        </div>
+
+        <div id="dropZone" tabindex="0" role="button" aria-label="Kéo thả ảnh vào đây hoặc nhấn để chọn ảnh" class="subtle cursor-pointer rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 px-5 py-10 text-center transition hover:border-blue-400 hover:bg-blue-50/50">
+          <div class="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-100 text-blue-600"><i data-lucide="image-up" class="h-7 w-7"></i></div>
+          <p class="font-semibold">Kéo và thả ảnh vào đây</p>
+          <p class="muted mt-2 text-sm text-slate-500">hoặc nhấn để chọn tệp từ thiết bị</p>
+          <p class="muted mt-3 text-xs text-slate-400">Có thể chọn nhiều ảnh cùng lúc</p>
+        </div>
+
+        <div id="settings" class="mt-7 hidden">
+          <div class="mb-4 flex items-center justify-between gap-3">
+            <h3 class="font-semibold">Cài đặt nén</h3>
+            <button id="clearAllBtn" class="text-sm font-medium text-slate-500 hover:text-rose-600"><i data-lucide="trash-2" class="mr-1 inline h-4 w-4"></i>Xóa tất cả</button>
+          </div>
+          <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+            <div class="rounded-2xl border border-slate-200 p-4">
+              <div class="mb-3 flex items-center justify-between gap-3">
+                <label for="quality" class="text-sm font-medium">Chất lượng nén</label>
+                <span id="qualityValue" class="rounded-lg bg-blue-50 px-2 py-1 text-sm font-semibold text-blue-700">75%</span>
+              </div>
+              <input id="quality" type="range" min="10" max="100" value="75" class="range w-full">
+              <div class="muted mt-2 flex justify-between text-xs text-slate-500"><span>Dung lượng nhỏ hơn</span><span>Chất lượng cao hơn</span></div>
+              <p class="muted mt-3 text-xs leading-5 text-slate-500">Chất lượng áp dụng cho JPG và WebP. PNG thường không dùng mức chất lượng này.</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 p-4">
+              <label for="outputFormat" class="mb-3 block text-sm font-medium">Định dạng đầu ra</label>
+              <select id="outputFormat" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100">
+                <option value="image/jpeg">JPG — phù hợp ảnh chụp</option>
+                <option value="image/webp">WebP — dung lượng nhỏ</option>
+                <option value="image/png">PNG — hỗ trợ nền trong suốt</option>
+                <option value="original">Giữ định dạng gần với ảnh gốc</option>
+              </select>
+              <p class="muted mt-3 text-xs leading-5 text-slate-500">Khi đổi PNG có nền trong suốt sang JPG, vùng trong suốt sẽ chuyển thành nền trắng.</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200 p-4 sm:col-span-2">
+              <div class="mb-3 flex items-center justify-between">
+                <label for="maxWidth" class="text-sm font-medium">Giới hạn chiều rộng (tùy chọn)</label>
+                <span id="widthValue" class="text-sm text-slate-500">Giữ nguyên</span>
+              </div>
+              <select id="maxWidth" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:border-blue-400 focus:ring-4 focus:ring-blue-100">
+                <option value="0">Giữ nguyên kích thước</option>
+                <option value="2560">Tối đa 2560 px</option>
+                <option value="1920">Tối đa 1920 px</option>
+                <option value="1600">Tối đa 1600 px</option>
+                <option value="1200">Tối đa 1200 px</option>
+                <option value="800">Tối đa 800 px</option>
+              </select>
+            </div>
+          </div>
+          <div class="mt-5 flex flex-wrap items-center justify-between gap-3">
+            <p id="summary" class="muted text-sm text-slate-500">Chưa có ảnh nào được chọn</p>
+            <button id="compressBtn" class="rounded-xl bg-blue-600 px-5 py-3 font-semibold text-white shadow-sm hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"><i data-lucide="zap" class="mr-2 inline h-4 w-4"></i>Nén ảnh</button>
+          </div>
+        </div>
+
+        <div id="resultsSection" class="mt-8 hidden">
+          <div class="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <div><h3 class="text-lg font-semibold">Kết quả nén ảnh</h3><p class="muted mt-1 text-sm text-slate-500">Xem dung lượng, sao chép thông tin hoặc tải từng ảnh.</p></div>
+            <button id="downloadAllBtn" class="rounded-xl border border-blue-200 px-4 py-2.5 font-semibold text-blue-600 hover:bg-blue-50"><i data-lucide="download" class="mr-2 inline h-4 w-4"></i>Tải tất cả</button>
+          </div>
+          <div id="resultsList" class="space-y-4"></div>
+          <div class="subtle mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div><p class="text-sm font-medium">Tổng dung lượng tiết kiệm</p><p id="totalSaved" class="mt-1 text-2xl font-bold text-emerald-600">—</p></div>
+              <button id="copySummaryBtn" class="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold hover:bg-slate-50"><i data-lucide="copy" class="mr-2 inline h-4 w-4"></i>Sao chép báo cáo</button>
+            </div>
+            <p id="copyStatus" class="muted mt-2 text-xs text-slate-500" role="status"></p>
+          </div>
+        </div>
+      </section>
+
+      <aside class="space-y-6">
+        <h2 class="font-semibold tracking-wide text-slate-500">CÔNG CỤ LIÊN QUAN</h2>
+        <a href="#tool" class="surface block rounded-3xl border border-slate-200 bg-white p-6 transition hover:-translate-y-0.5 hover:shadow-lg">
+          <span class="mb-4 inline-flex rounded-xl bg-blue-100 p-3 text-blue-600"><i data-lucide="file-image" class="h-6 w-6"></i></span>
+          <h3 class="font-semibold">Chuyển ảnh sang PDF</h3><p class="muted mt-2 leading-6 text-slate-500">Gộp ảnh thành tài liệu PDF dễ chia sẻ.</p>
+        </a>
+        <a href="#tool" class="surface block rounded-3xl border border-slate-200 bg-white p-6 transition hover:-translate-y-0.5 hover:shadow-lg">
+          <span class="mb-4 inline-flex rounded-xl bg-blue-100 p-3 text-blue-600"><i data-lucide="crop" class="h-6 w-6"></i></span>
+          <h3 class="font-semibold">Cắt và đổi kích thước ảnh</h3><p class="muted mt-2 leading-6 text-slate-500">Điều chỉnh kích thước ảnh theo nhu cầu.</p>
+        </a>
+        <div class="surface rounded-3xl border border-slate-200 bg-white p-6">
+          <h3 class="font-semibold">Cách sử dụng</h3>
+          <ol class="mt-4 space-y-3 text-sm leading-6 text-slate-500 muted">
+            <li class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-50 font-semibold text-blue-600">1</span>Chọn ảnh hoặc kéo ảnh vào khung tải lên.</li>
+            <li class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-50 font-semibold text-blue-600">2</span>Điều chỉnh chất lượng, định dạng và kích thước.</li>
+            <li class="flex gap-3"><span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-blue-50 font-semibold text-blue-600">3</span>Nhấn Nén ảnh, rồi tải kết quả về máy.</li>
+          </ol>
+        </div>
+        <div class="surface rounded-3xl border border-slate-200 bg-white p-6">
+          <div class="flex items-center gap-2 font-semibold"><i data-lucide="lightbulb" class="h-5 w-5 text-amber-500"></i>Mẹo nhỏ</div>
+          <p class="muted mt-2 text-sm leading-6 text-slate-500">WebP thường cho dung lượng nhỏ với chất lượng tốt. Nếu cần giữ nền trong suốt, hãy chọn PNG hoặc WebP.</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-[1500px] flex-col gap-2 px-5 py-7 text-sm text-slate-500 sm:flex-row sm:items-center sm:justify-between lg:px-8">
+      <p>© 2026 Tool-web. Công cụ hữu ích, ngay trên trình duyệt.</p><p>Ưu tiên quyền riêng tư · Không cần tài khoản</p>
+    </div>
+  </footer>
+
+  <div id="toast" class="pointer-events-none fixed bottom-5 left-1/2 z-50 hidden -translate-x-1/2 rounded-xl bg-slate-900 px-5 py-3 text-sm font-medium text-white shadow-xl" role="status" aria-live="polite"></div>
+
+  <script>
+    const $ = (s, root = document) => root.querySelector(s);
+    const $$ = (s, root = document) => [...root.querySelectorAll(s)];
+    const state = { files: [], results: [], toastTimer: null };
+    const fileInput = $('#fileInput');
+    const dropZone = $('#dropZone');
+
+    function toast(message, isError = false) {
+      const el = $('#toast');
+      el.textContent = message;
+      el.classList.remove('hidden', 'bg-slate-900', 'bg-rose-600', 'bg-emerald-600');
+      el.classList.add(isError ? 'bg-rose-600' : 'bg-slate-900');
+      clearTimeout(state.toastTimer);
+      state.toastTimer = setTimeout(() => el.classList.add('hidden'), 3000);
+    }
+    function formatBytes(bytes) {
+      if (!Number.isFinite(bytes) || bytes < 0) return '—';
+      if (bytes < 1024) return `${bytes} B`;
+      const units = ['KB', 'MB', 'GB'];
+      let value = bytes / 1024, i = 0;
+      while (value >= 1024 && i < units.length - 1) { value /= 1024; i++; }
+      return `${value.toLocaleString('vi-VN', { maximumFractionDigits: 2 })} ${units[i]}`;
+    }
+    function safeName(name) { return name.replace(/\.[^.]+$/, '').replace(/[<>:"/\\|?*\x00-\x1F]/g, '-').trim() || 'anh'; }
+    function updateQualityLabel() { $('#qualityValue').textContent = `${$('#quality').value}%`; }
+    function updateSummary() {
+      $('#settings').classList.toggle('hidden', state.files.length === 0);
+      $('#summary').textContent = state.files.length ? `${state.files.length} ảnh đã chọn · ${formatBytes(state.files.reduce((sum, item) => sum + item.file.size, 0))}` : 'Chưa có ảnh nào được chọn';
+    }
+    function revokeResults() {
+      state.results.forEach(item => { if (item.url) URL.revokeObjectURL(item.url); });
+      state.results = [];
+    }
+    function renderFiles() {
+      updateSummary();
+      $('#resultsSection').classList.add('hidden');
+      revokeResults();
+      if (!state.files.length) return;
+      // File selection cards are intentionally lightweight; the actual previews appear after compression.
+      $('#summary').textContent = `${state.files.length} ảnh đã chọn · ${formatBytes(state.files.reduce((sum, item) => sum + item.file.size, 0))}`;
+      const old = $('#selectedFiles');
+      if (old) old.remove();
+      const list = document.createElement('div');
+      list.id = 'selectedFiles';
+      list.className = 'mt-4 space-y-2';
+      state.files.forEach((item, index) => {
+        const row = document.createElement('div');
+        row.className = 'flex items-center gap-3 rounded-xl border border-slate-200 p-3';
+        const thumb = document.createElement('img');
+        thumb.src = item.previewUrl; thumb.alt = ''; thumb.className = 'h-12 w-12 rounded-lg bg-slate-100 object-cover';
+        const info = document.createElement('div'); info.className = 'min-w-0 flex-1';
+        const name = document.createElement('p'); name.className = 'truncate text-sm font-medium'; name.textContent = item.file.name;
+        const size = document.createElement('p'); size.className = 'muted mt-1 text-xs text-slate-500'; size.textContent = `${formatBytes(item.file.size)} · ${item.width} × ${item.height} px`;
+        info.append(name, size);
+        const remove = document.createElement('button'); remove.className = 'rounded-lg p-2 text-slate-400 hover:bg-rose-50 hover:text-rose-600'; remove.title = 'Xóa ảnh này'; remove.setAttribute('aria-label', `Xóa ${item.file.name}`); remove.innerHTML = '<i data-lucide="x" class="h-4 w-4"></i>';
+        remove.addEventListener('click', () => { URL.revokeObjectURL(item.previewUrl); state.files.splice(index, 1); renderFiles(); if (window.lucide) lucide.createIcons(); });
+        row.append(thumb, info, remove); list.append(row);
+      });
+      $('#settings').append(list);
+      if (window.lucide) lucide.createIcons();
+    }
+    async function addFiles(fileList) {
+      const incoming = [...fileList].filter(file => file.type.startsWith('image/'));
+      if (!incoming.length) { toast('Vui lòng chọn tệp hình ảnh hợp lệ.', true); return; }
+      const maxCount = 30;
+      const remaining = maxCount - state.files.length;
+      if (remaining <= 0) { toast(`Chỉ hỗ trợ tối đa ${maxCount} ảnh mỗi lượt.`, true); return; }
+      const chosen = incoming.slice(0, remaining);
+      let added = 0;
+      for (const file of chosen) {
+        try {
+          const previewUrl = URL.createObjectURL(file);
+          const dimensions = await loadImage(previewUrl);
+          state.files.push({ file, previewUrl, width: dimensions.width, height: dimensions.height });
+          added++;
+        } catch {
+          toast(`Không thể đọc ảnh: ${file.name}`, true);
+        }
+      }
+      renderFiles();
+      if (added) toast(`Đã thêm ${added} ảnh.`);
+      if (incoming.length > remaining) toast(`Đã đạt giới hạn ${maxCount} ảnh.`, true);
+    }
+    function loadImage(src) {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve({ width: img.naturalWidth, height: img.naturalHeight, img });
+        img.onerror = () => reject(new Error('Không đọc được ảnh'));
+        img.src = src;
+      });
+    }
+    function canvasBlob(canvas, type, quality) {
+      return new Promise((resolve, reject) => {
+        canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Trình duyệt không tạo được ảnh đầu ra')), type, quality);
+      });
+    }
+    async function compressOne(item) {
+      const { img } = await loadImage(item.previewUrl);
+      const maxWidth = Number($('#maxWidth').value);
+      const scale = maxWidth > 0 && img.naturalWidth > maxWidth ? maxWidth / img.naturalWidth : 1;
+      const width = Math.max(1, Math.round(img.naturalWidth * scale));
+      const height = Math.max(1, Math.round(img.naturalHeight * scale));
+      const requested = $('#outputFormat').value;
+      let type = requested;
+      if (type === 'original') {
+        type = item.file.type;
+        if (!['image/jpeg', 'image/png', 'image/webp'].includes(type)) type = 'image/jpeg';
+      }
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(type)) type = 'image/jpeg';
+      const canvas = document.createElement('canvas');
+      canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext('2d', { alpha: type !== 'image/jpeg' });
+      if (!ctx) throw new Error('Trình duyệt không hỗ trợ Canvas.');
+      if (type === 'image/jpeg') { ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, width, height); }
+      ctx.drawImage(img, 0, 0, width, height);
+      const quality = Number($('#quality').value) / 100;
+      const blob = await canvasBlob(canvas, type, type === 'image/png' ? undefined : quality);
+      const ext = type === 'image/jpeg' ? 'jpg' : type === 'image/webp' ? 'webp' : 'png';
+      const outputName = `${safeName(item.file.name)}-nen.${ext}`;
+      return { original: item.file, blob, url: URL.createObjectURL(blob), name: outputName, type, width, height, saved: item.file.size - blob.size };
+    }
+    function renderResults() {
+      const list = $('#resultsList');
+      list.replaceChildren();
+      let originalTotal = 0, compressedTotal = 0;
+      state.results.forEach((result, index) => {
+        originalTotal += result.original.size; compressedTotal += result.blob.size;
+        const card = document.createElement('article');
+        card.className = 'rounded-2xl border border-slate-200 p-4';
+        const top = document.createElement('div'); top.className = 'flex flex-wrap items-start gap-4';
+        const imgWrap = document.createElement('div'); imgWrap.className = 'checkerboard flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-100';
+        const img = document.createElement('img'); img.src = result.url; img.alt = `Ảnh đã nén ${result.name}`; img.className = 'preview-img'; img.style.maxHeight = '112px'; imgWrap.append(img);
+        const info = document.createElement('div'); info.className = 'min-w-0 flex-1';
+        const name = document.createElement('p'); name.className = 'break-all font-semibold'; name.textContent = result.name;
+        const size = document.createElement('p'); size.className = 'muted mt-2 text-sm text-slate-500'; size.textContent = `${formatBytes(result.original.size)} → ${formatBytes(result.blob.size)}`;
+        const reduction = document.createElement('p'); reduction.className = `mt-1 text-sm font-semibold ${result.saved > 0 ? 'text-emerald-600' : 'text-amber-600'}`;
+        reduction.textContent = result.saved > 0 ? `Giảm ${((result.saved / result.original.size) * 100).toLocaleString('vi-VN', { maximumFractionDigits: 1 })}% · Tiết kiệm ${formatBytes(result.saved)}` : result.saved === 0 ? 'Dung lượng không đổi' : `Tăng ${formatBytes(-result.saved)} dung lượng`;
+        const dimensions = document.createElement('p'); dimensions.className = 'muted mt-1 text-xs text-slate-500'; dimensions.textContent = `${result.width} × ${result.height} px`;
+        info.append(name, size, reduction, dimensions);
+        const actions = document.createElement('div'); actions.className = 'mt-4 flex flex-wrap gap-2';
+        const download = document.createElement('a'); download.href = result.url; download.download = result.name; download.className = 'inline-flex items-center rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700'; download.innerHTML = '<i data-lucide="download" class="mr-2 h-4 w-4"></i>Tải ảnh';
+        const copy = document.createElement('button'); copy.className = 'inline-flex items-center rounded-lg border border-slate-200 px-3 py-2 text-sm font-semibold hover:bg-slate-50'; copy.innerHTML = '<i data-lucide="copy" class="mr-2 h-4 w-4"></i>Sao chép thông tin';
+        copy.addEventListener('click', async () => {
+          const percent = result.saved > 0 ? `${((result.saved / result.original.size) * 100).toFixed(1)}%` : '0%';
+          await copyText(`Tên ảnh: ${result.name}\nDung lượng gốc: ${formatBytes(result.original.size)}\nDung lượng sau nén: ${formatBytes(result.blob.size)}\nTiết kiệm: ${formatBytes(Math.max(0, result.saved))} (${percent})\nKích thước: ${result.width} × ${result.height} px`);
+        });
+        actions.append(download, copy);
+        card.append(top, actions); top.append(imgWrap, info); list.append(card);
+      });
+      const saved = originalTotal - compressedTotal;
+      $('#totalSaved').textContent = saved >= 0 ? `${formatBytes(saved)} (${originalTotal ? ((saved / originalTotal) * 100).toLocaleString('vi-VN', { maximumFractionDigits: 1 }) : 0}%)` : `Tăng ${formatBytes(-saved)}`;
+      $('#resultsSection').classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+    }
+    async function copyText(text) {
+      try {
+        if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(text);
+        else {
+          const area = document.createElement('textarea');
+          area.value = text; area.style.position = 'fixed'; area.style.opacity = '0';
+          document.body.append(area); area.select();
+          const ok = document.execCommand('copy'); area.remove();
+          if (!ok) throw new Error('Không sao chép được');
+        }
+        $('#copyStatus').textContent = 'Đã sao chép thông tin vào bộ nhớ tạm.';
+        toast('Đã sao chép vào bộ nhớ tạm.');
+      } catch {
+        $('#copyStatus').textContent = 'Trình duyệt không cho phép sao chép tự động. Bạn hãy thử mở trang qua localhost hoặc HTTPS.';
+        toast('Không thể sao chép tự động trên trình duyệt này.', true);
+      }
+    }
+
+    $('#chooseBtn').addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('click', () => fileInput.click());
+    dropZone.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); fileInput.click(); } });
+    fileInput.addEventListener('change', async e => { await addFiles(e.target.files); fileInput.value = ''; });
+    ['dragenter', 'dragover'].forEach(type => dropZone.addEventListener(type, e => { e.preventDefault(); dropZone.classList.add('drop-active'); }));
+    ['dragleave', 'drop'].forEach(type => dropZone.addEventListener(type, e => { e.preventDefault(); dropZone.classList.remove('drop-active'); }));
+    dropZone.addEventListener('drop', e => addFiles(e.dataTransfer.files));
+    $('#quality').addEventListener('input', updateQualityLabel);
+    $('#maxWidth').addEventListener('change', () => { $('#widthValue').textContent = Number($('#maxWidth').value) ? `Tối đa ${$('#maxWidth').value} px` : 'Giữ nguyên'; });
+    $('#clearAllBtn').addEventListener('click', () => {
+      state.files.forEach(item => URL.revokeObjectURL(item.previewUrl));
+      state.files = []; revokeResults();
+      const selected = $('#selectedFiles'); if (selected) selected.remove();
+      updateSummary(); $('#resultsSection').classList.add('hidden'); $('#copyStatus').textContent = '';
+      toast('Đã xóa danh sách ảnh.');
+    });
+    $('#compressBtn').addEventListener('click', async () => {
+      if (!state.files.length) { toast('Vui lòng chọn ít nhất một ảnh.', true); return; }
+      const button = $('#compressBtn'); button.disabled = true;
+      const originalText = button.innerHTML;
+      button.textContent = 'Đang nén ảnh…';
+      revokeResults();
+      $('#resultsSection').classList.add('hidden');
+      try {
+        for (let i = 0; i < state.files.length; i++) {
+          $('#summary').textContent = `Đang nén ảnh ${i + 1}/${state.files.length}…`;
+          const result = await compressOne(state.files[i]);
+          state.results.push(result);
+        }
+        renderResults();
+        toast(`Đã nén xong ${state.results.length} ảnh.`);
+      } catch (error) {
+        console.error(error);
+        toast(error.message || 'Có lỗi khi nén ảnh.', true);
+        if (state.results.length) renderResults();
+      } finally {
+        button.disabled = false; button.innerHTML = originalText;
+        updateSummary();
+        if (window.lucide) lucide.createIcons();
+      }
+    });
+    $('#downloadAllBtn').addEventListener('click', async () => {
+      if (!state.results.length) return;
+      for (const result of state.results) {
+        const a = document.createElement('a'); a.href = result.url; a.download = result.name;
+        document.body.append(a); a.click(); a.remove();
+        await new Promise(resolve => setTimeout(resolve, 180));
+      }
+      toast('Đã gửi yêu cầu tải tất cả ảnh. Trình duyệt có thể hỏi quyền tải nhiều tệp.');
+    });
+    $('#copySummaryBtn').addEventListener('click', () => {
+      const lines = ['BÁO CÁO NÉN ẢNH', ...state.results.map(r => `${r.name}: ${formatBytes(r.original.size)} → ${formatBytes(r.blob.size)}; ${r.saved >= 0 ? 'tiết kiệm ' + formatBytes(r.saved) : 'tăng ' + formatBytes(-r.saved)}`)];
+      const totalOriginal = state.results.reduce((s, r) => s + r.original.size, 0);
+      const totalOutput = state.results.reduce((s, r) => s + r.blob.size, 0);
+      lines.push(`Tổng gốc: ${formatBytes(totalOriginal)}`, `Tổng sau nén: ${formatBytes(totalOutput)}`, `Chênh lệch: ${formatBytes(Math.abs(totalOriginal - totalOutput))}`);
+      copyText(lines.join('\n'));
+    });
+    $('#favoriteBtn').addEventListener('click', () => {
+      const active = $('#favoriteBtn').dataset.active === 'true';
+      $('#favoriteBtn').dataset.active = String(!active);
+      $('#favoriteBtn').classList.toggle('text-rose-500', !active);
+      $('#favoriteBtn').classList.toggle('text-slate-400', active);
+      $('#favoriteBtn').innerHTML = `<i data-lucide="heart" class="h-5 w-5" ${!active ? 'fill="currentColor"' : ''}></i>`;
+      $('#favoriteBtn').title = !active ? 'Đã thêm vào yêu thích' : 'Thêm vào yêu thích';
+      if (window.lucide) lucide.createIcons();
+      toast(!active ? 'Đã đánh dấu yêu thích trong phiên hiện tại.' : 'Đã bỏ đánh dấu yêu thích.');
+    });
+    $('#themeBtn').addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+      const dark = document.documentElement.classList.contains('dark');
+      $('#themeBtn').innerHTML = `<i data-lucide="${dark ? 'sun' : 'moon'}" class="h-5 w-5"></i>`;
+      if (window.lucide) lucide.createIcons();
+    });
+    $('#toolSearch').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && e.target.value.trim()) {
+        const q = e.target.value.trim().toLowerCase();
+        toast(['nén ảnh', 'ảnh', 'image compressor'].some(x => x.includes(q) || q.includes(x)) ? 'Bạn đang ở công cụ Nén ảnh.' : 'Chưa có công cụ phù hợp với từ khóa này.', !(['nén ảnh', 'ảnh', 'image compressor'].some(x => x.includes(q) || q.includes(x))));
+      }
+    });
+
+    updateQualityLabel();
+    updateSummary();
+    if (window.lucide) lucide.createIcons();
+  </script>
+</body>
+</html>
